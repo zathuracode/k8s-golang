@@ -1,0 +1,40 @@
+#Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-k8s-golang-deploy
+  labels:
+    app: backend
+#ReplicaSet
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+##Pod
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: k8s-golang
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9090
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-k8s-golang-service
+  labels:
+    app: backend
+spec:
+  type: ClusterIP
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9090
